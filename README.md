@@ -8,7 +8,6 @@
 
 ```
 $ brew tap andersjanmyr/ocr
-# To avoid installing midnight commander, use full tap path.
 $ brew install ocr
 ```
 
@@ -36,6 +35,7 @@ $ curl -L https://github.com/andersjanmyr/ocr/releases/download/v1.0.1/ocr-linux
 
 # Make executable
 $ chmod a+x /usr/local/bin/ocr
+```
 
 ## Setup
 
