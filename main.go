@@ -3,73 +3,98 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 
 	vision "cloud.google.com/go/vision/apiv1"
-	"github.com/pkg/errors"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/endpoints"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/rekognition"
 	"golang.org/x/net/context"
 )
 
-// GetAnnotationsFromImage returns the annotations for the read image
-func GetAnnotationsFromImage(ctx context.Context, client *vision.ImageAnnotatorClient, reader io.Reader) ([]string, error) {
+type textExtractor interface {
+	getText(reader io.Reader) (string, error)
+}
+
+type googleExtractor struct{}
+
+func (g googleExtractor) getText(reader io.Reader) (string, error) {
+	ctx := context.Background()
+	client, err := vision.NewImageAnnotatorClient(ctx)
+	if err != nil {
+		return "", err
+	}
 	image, err := vision.NewImageFromReader(reader)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to create image")
+		return "", err
 	}
 
 	annotations, err := client.DetectTexts(ctx, image, nil, 10)
 	if err != nil {
-		return nil, errors.Wrap(err, "Failed to detect labels")
+		return "", err
 	}
 
 	if len(annotations) == 0 {
-		return []string{}, nil
+		return "No text found!", nil
 	}
 
-	texts := []string{}
-	for _, annotation := range annotations {
-		texts = append(texts, annotation.Description)
-	}
-	return texts, nil
+	return annotations[0].Description, nil
 }
 
-func ParseAnnotations(annotations []string) map[string]string {
-	found := make(map[string]string)
-	for i, a := range annotations {
-		switch a {
-		case "Total:":
-			fallthrough
-		case "Tax:":
-			found[strings.Trim(a, ":")] = annotations[i+1]
-		case "Placed:":
-			found["Date"] = annotations[i+1] +
-				annotations[i+2] +
-				annotations[i+3]
-		}
+type awsExtractor struct{}
+
+func (g awsExtractor) getText(reader io.Reader) (string, error) {
+	sess := session.Must(session.NewSession())
+	config := &aws.Config{
+		Region: aws.String(endpoints.UsWest2RegionID),
 	}
-	return found
+	bytes, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return "", err
+	}
+	rekognitionService := rekognition.New(sess, config)
+	image := rekognition.Image{Bytes: []byte(bytes)}
+	output, err := rekognitionService.DetectText(&rekognition.DetectTextInput{
+		Image: &image,
+	})
+	if err != nil {
+		return "", err
+	}
+	lines := []string{}
+	for _, td := range output.TextDetections {
+		if *td.Type != "LINE" {
+			break
+		}
+		lines = append(lines, *td.DetectedText)
+	}
+	return strings.Join(lines, "\n"), nil
 }
 
 func main() {
-	ctx := context.Background()
-
-	client, err := vision.NewImageAnnotatorClient(ctx)
-	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
+	if len(os.Args) != 2 {
+		fmt.Printf("Usage: %s <image>\n", os.Args[0])
+		os.Exit(1)
 	}
-
-	filename := "./images/amazon-order.jpg"
+	filename := os.Args[1]
 
 	file, err := os.Open(filename)
 	if err != nil {
 		log.Fatalf("Failed to read file: %v", err)
 	}
 	defer file.Close()
-	annotations, err := GetAnnotationsFromImage(ctx, client, file)
-	if err != nil {
-		log.Fatalf("Failed to get annotations from file: %v", err)
+	var extractor textExtractor
+	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") != "" {
+		extractor = googleExtractor{}
+	} else {
+		extractor = awsExtractor{}
 	}
-	fmt.Printf("%#v\n", ParseAnnotations(annotations))
+	text, err := extractor.getText(file)
+	if err != nil {
+		log.Fatalf("Failed to get text from file: %v", err)
+	}
+	fmt.Printf("%s\n", text)
 }
