@@ -19,19 +19,19 @@ $ brew install ocr
 
 ### Links
 
-* [OS X](https://github.com/andersjanmyr/ocr/releases/download/v1.0.0/ocr-osx)
-* [Linux](https://github.com/andersjanmyr/ocr/releases/download/v1.0.0/ocr-linux)
-* [Windows](https://github.com/andersjanmyr/ocr/releases/download/v1.0.0/ocr.exe)
+* [OS X](https://github.com/andersjanmyr/ocr/releases/download/v1.0.1/ocr-osx)
+* [Linux](https://github.com/andersjanmyr/ocr/releases/download/v1.0.1/ocr-linux)
+* [Windows](https://github.com/andersjanmyr/ocr/releases/download/v1.0.1/ocr.exe)
 
 ### Curl
 
 ```
 # OS X
-$ curl -L https://github.com/andersjanmyr/ocr/releases/download/v1.0.0/ocr-osx \
+$ curl -L https://github.com/andersjanmyr/ocr/releases/download/v1.0.1/ocr-osx \
   > /usr/local/bin/ocr
 
 # Linux
-$ curl -L https://github.com/andersjanmyr/ocr/releases/download/v1.0.0/ocr-linux \
+$ curl -L https://github.com/andersjanmyr/ocr/releases/download/v1.0.1/ocr-linux \
   > /usr/local/bin/ocr
 
 # Make executable
