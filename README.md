@@ -1,4 +1,4 @@
-# OCR
+# ![ocr-logo](./images/ocr-logo.png) OCR
 
 `ocr` uses GCP or AWS to extract text from images.
 
