@@ -8,12 +8,13 @@ import (
 	"os"
 	"strings"
 
+	"context"
+
 	vision "cloud.google.com/go/vision/apiv1"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rekognition"
-	"golang.org/x/net/context"
 )
 
 type textExtractor interface {

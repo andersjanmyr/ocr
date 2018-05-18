@@ -1,7 +1,41 @@
 # OCR
 
-`ocr` uses GCP or AWS to read text from images.
+`ocr` uses GCP or AWS to extract text from images.
 
+## Installation
+
+### Homebrew Installation on OS X
+
+```
+$ brew tap andersjanmyr/ocr
+# To avoid installing midnight commander, use full tap path.
+$ brew install ocr
+```
+
+### Other Installation
+
+`ocr` is a single binary. Install it by right-clicking and `Save as...` or with
+`curl`.
+
+### Links
+
+* [OS X](https://github.com/andersjanmyr/ocr/releases/download/v0.9.9/ocr-osx)
+* [Linux](https://github.com/andersjanmyr/ocr/releases/download/v0.9.9/ocr-linux)
+* [Windows](https://github.com/andersjanmyr/ocr/releases/download/v0.9.9/ocr.exe)
+
+### Curl
+
+```
+# OS X
+$ curl -L https://github.com/andersjanmyr/ocr/releases/download/v0.9.9/ocr-osx \
+  > /usr/local/bin/ocr
+
+# Linux
+$ curl -L https://github.com/andersjanmyr/ocr/releases/download/v0.9.9/ocr-linux \
+  > /usr/local/bin/ocr
+
+# Make executable
+$ chmod a+x /usr/local/bin/ocr
 
 ## Setup
 
