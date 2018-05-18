@@ -26,7 +26,7 @@ check_github_release_config() {
     --user andersjanmyr \
     --repo ocr \
     --tag v1.0.0 \
-    --name "Release 1.0.0" ; then
+    --name "Release v1.0.0" ; then
     echoerr "github release must be installed and configured"
     echoerr "https://github.com/aktau/github-release#how-to-install"
     exit 1
