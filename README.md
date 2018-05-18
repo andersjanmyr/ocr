@@ -6,7 +6,7 @@
 
 ### Homebrew Installation on OS X
 
-```
+```sh
 $ brew tap andersjanmyr/ocr
 $ brew install ocr
 ```
@@ -24,7 +24,7 @@ $ brew install ocr
 
 ### Curl
 
-```
+```sh
 # OS X
 $ curl -L https://github.com/andersjanmyr/ocr/releases/download/v1.0.1/ocr-osx \
   > /usr/local/bin/ocr
@@ -44,16 +44,21 @@ $ chmod a+x /usr/local/bin/ocr
 
 ## Usage
 
-```
-ocr <image file>
+```sh
+$ ocr <image file>
 ```
 
 ## Folder Watching
 
 The following AppleScript can be used to listen for new files and copy the text
-of them into the clipboard
+to the clipboard. It needs to be attached as a *Folder Action* to the directory
+you want to listen to. Since my screenshots are saved to the Desktop, this is
+where I have attached the script.
 
-```
+![attach folder action](./images/folder-action.png)
+
+```applescript
+-- ~/Library/Scripts/Folder Action Scripts/ocr.scpt
 on adding folder items to theAttachedFolder after receiving theNewItems
   tell application "Finder"
     repeat with anItem in theNewItems
