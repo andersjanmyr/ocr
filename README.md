@@ -7,7 +7,7 @@
 ### Homebrew Installation on OS X
 
 ```sh
-$ brew tap andersjanmyr/ocr
+$ brew tap andersjanmyr/tap
 $ brew install ocr
 ```
 
