@@ -50,10 +50,13 @@ $ ocr <image file>
 
 ## Folder Watching
 
-The following AppleScript can be used to listen for new files and copy the text
-to the clipboard. It needs to be attached as a *Folder Action* to the directory
-you want to listen to. Since my screenshots are saved to the Desktop, this is
-where I have attached the script.
+The following AppleScript, [ocr.scpt](./ocr.scpt) can be used to listen for new
+files and copy the text to the clipboard. It needs to be attached as a *Folder
+Action* to the directory you want to watch. Since my screenshots are saved
+to the Desktop, this is where I have attached the script. The script should go
+in the user's folder action scripts folder, `~/Library/Scripts/Folder Action Scripts/`.
+Make sure you update the path to the `GOOGLE_APPLICATION_CREDENTIALS` in the
+scripts to your own credentials file.
 
 ![attach folder action](./images/folder-action.png)
 
@@ -62,6 +65,7 @@ where I have attached the script.
 on adding folder items to theAttachedFolder after receiving theNewItems
   tell application "Finder"
     repeat with anItem in theNewItems
+      set AppleScript's text item delimiters to {return}
       set p to POSIX path of anItem
       set command to "GOOGLE_APPLICATION_CREDENTIALS=/path/to/auth.json /usr/local/bin/ocr " & (quoted form of p)
       try
